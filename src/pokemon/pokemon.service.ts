@@ -27,8 +27,14 @@ export class PokemonService {
     }
   }
 
-  findAll() {
-    return `This action returns all pokemon`;
+  async findAll() {
+    try {
+      const pokemons = await this.pokemonModel.find();
+      if (!pokemons) throw new NotFoundException('No pokemons found');
+      return pokemons;
+    } catch (error) {
+      this.handleExceptions(error);
+    }
   }
 
   async findOne(term: string) {
@@ -66,8 +72,30 @@ export class PokemonService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pokemon`;
+  async remove(id: string) {
+    // const pokemon = await this.findOne(id);
+
+    // try {
+    //   if (pokemon) {
+    //     await pokemon.deleteOne();
+    //     return `Pokemon with id ${id} was deleted`;
+    //   }
+    // } catch (error) {
+    //   this.handleExceptions(error);
+    // }
+    const { deletedCount, acknowledged } = await this.pokemonModel.deleteOne({
+      _id: id,
+    });
+    if (!acknowledged)
+      throw new InternalServerErrorException(
+        'Cant delete pokemon, Internal server error',
+      );
+    if (deletedCount === 0)
+      throw new NotFoundException(`Pokemon with id ${id} was not found`);
+
+    const result = `Pokemon with id ${id} was deleted`;
+    console.log(result);
+    return result;
   }
 
   private handleExceptions(error: any) {
