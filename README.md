@@ -22,6 +22,18 @@ docker-compose up -d
 ```
 http://localhost:3000/api/v2/seed
 
+#Produccion build
+1. Crear el archivo .env.prod
+2. Llenar las variables de entorno de .env.prod
+3. Crear la nueva imagen
+docker-compose -f docker-compose.prod.yaml --env-file .env.prod up --build 
+
+Nota: se usa este comamando para ejecutar el docker-compose.prod.yaml, que servira para montar el contendor de las imagenes de docker de el dist y la base de datos
+docker-compose -f docker-compose.prod.yaml --env-file .env.prod up --build 
+
+Nota: si ya se instalo, para levantar nuevamente usar 
+docker-compose -f docker-compose.prod.yaml --env-file .env.prod up
+
 ## Stack Usado
 * NestJS
 * MongoDB
